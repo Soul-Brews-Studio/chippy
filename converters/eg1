@@ -1,5 +1,5 @@
 #!/bin/zsh
-# eg1 <check|convert|parity|export> [--model ID] [args] — convert_gemma1.py (EmbeddingGemma v1) with its pinned dependencies.
+# eg1 [--model ID] <check|convert|parity|export> [args] — convert_gemma1.py (EmbeddingGemma v1) with its pinned dependencies.
 # Library warning noise (untested torch version, deprecations, progress bars) is dropped from stderr.
 script=convert_gemma1.py
 export HF_HUB_DISABLE_PROGRESS_BARS=1 TRANSFORMERS_VERBOSITY=error PYTHONWARNINGS=ignore
