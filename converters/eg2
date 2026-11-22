@@ -1,0 +1,12 @@
+#!/bin/zsh
+# eg2 <check|convert|parity|bench|debug|export> [args] — convert_gemma2.py with its pinned
+# dependencies (transformers 5.18 dev for EmbeddingGemma 2, coremltools 9.0); `eg2 vision
+# <check|convert|parity>` runs convert_gemma2_vision.py the same way, `eg2 vision2 ...` the v2 one. Library warning noise
+# (untested torch version, deprecations, progress bars) is dropped from stderr; nothing else is.
+script=convert_gemma2.py
+[[ $1 == vision ]] && { script=convert_gemma2_vision.py; shift; }
+[[ $1 == vision2 ]] && { script=convert_gemma2_vision_v2.py; shift; }
+export HF_HUB_DISABLE_PROGRESS_BARS=1 TRANSFORMERS_VERBOSITY=error PYTHONWARNINGS=ignore
+uv run -q --prerelease allow --with 'sentence-transformers[image]>=6.1' --with 'transformers>=5.18.0.dev0' \
+  --with pillow --with coremltools==9.0 --with tokenizers python "${0:A:h}/$script" "$@" \
+  2> >(rg -v -i 'torch version|has not been tested|deprecated|n_bits|Loading weights|scikit-learn version|Converting PyTorch|Running MIL|^\s*$' >&2)
